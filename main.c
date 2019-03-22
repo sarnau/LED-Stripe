@@ -9,7 +9,7 @@
   ******************************************************************************
   */
 
-/* Includes ------------------------------------------------------------------*/
+#include <__cross_studio_io.h>
 #include "color.h"
 #include "rgb_lib.h"
 #include "stm32f10x.h"
@@ -100,8 +100,22 @@ void theaterChaseRainbow(uint8_t wait) {
   }
 }
 
+
+#define DWT_BASE            (0xE0001000UL)                            /*!< DWT Base Address */
+#define DWT                 ((DWT_Type       *)     DWT_BASE      )   /*!< DWT configuration struct */
+
+
+
 int main(void) {
   init_stripe();
+
+// at 24MHz it is running at 143Hz
+//  for(int i=0; i<10; ++i) {
+//    uint32_t cyc = DWT->CYCCNT;
+//      refresh_stripe(stripe, NR_OF_LEDS);
+//      cyc = DWT->CYCCNT - cyc;
+//      debug_printf("%d = %.1fHz\n", cyc, 1.0 * SystemCoreClock / cyc);
+//  }
 
   while (1) {
     const int speed[5] = {50, 25, 10, 4, 0};
