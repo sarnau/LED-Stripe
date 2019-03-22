@@ -19,8 +19,8 @@
 #define NR_OF_LEDS 150
 #define BYTE_RESET 40
 #define BUFFER_SIZE NR_OF_LEDS * 8 * 3 + BYTE_RESET
-//#define WS2812B_HIGH 		0x03		// not inverted
-//#define WS2812B_LOW			0x3F		// not inverted
+//#define WS2812B_HIGH 0x03 // not inverted
+//#define WS2812B_LOW 0x3F  // not inverted
 // use with 74HCT04
 #define WS2812B_HIGH 0xFC // inverted
 #define WS2812B_LOW 0xC0  // Inverted

@@ -26,27 +26,24 @@ volatile uint8_t spiBusyFlag = 0; // SPI busy
   * @retval None
   */
 void init_stripe(void) {
-  GPIO_InitTypeDef GPIO_InitStructure;
-  SPI_InitTypeDef SPI_InitStructure;
-  DMA_InitTypeDef DMA_InitStructure;
-  NVIC_InitTypeDef NVIC_InitStructure;
-
-  /* Enable GPIO, SPI1, DMA1 clock */
+  // Enable GPIO, SPI1, DMA1 clock
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA | RCC_APB2Periph_AFIO | RCC_APB2Periph_SPI1, ENABLE);
   RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1, ENABLE);
 
-  /* Configure SPI Tx and SCLK as alternate function push-pull */
+  // Configure SPI Tx and SCLK as alternate function push-pull
+  GPIO_InitTypeDef GPIO_InitStructure;
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_7;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_Init(GPIOA, &GPIO_InitStructure);
 
-  /* SPI configuration */
+  // SPI configuration
   /* SPIx configured as follow:
 	    - BaudRate Prescaler = 4
 	    - Data Size = 8 Bits
 	    - Transmit enabled
 	*/
+  SPI_InitTypeDef SPI_InitStructure;
   SPI_InitStructure.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_4;
   SPI_InitStructure.SPI_CPHA = SPI_CPHA_2Edge;
   SPI_InitStructure.SPI_CPOL = SPI_CPOL_Low;
@@ -58,13 +55,13 @@ void init_stripe(void) {
   SPI_InitStructure.SPI_NSS = SPI_NSS_Soft;
   SPI_Init(SPI1, &SPI_InitStructure);
 
-  /* Enable SPIx/I2Sx DMA */
+  // Enable SPIx/I2Sx DMA
   SPI_I2S_DMACmd(SPI1, SPI_I2S_DMAReq_Tx, ENABLE);
 
-  /* Enable SPI */
+  // Enable SPI
   SPI_Cmd(SPI1, ENABLE);
 
-  /* DMA configuration */
+  // DMA configuration
   /* DMAy Channelx configured as follow:
 	    - Buffer Size = 0
 		- Direction = Peripheral -> Destination
@@ -72,6 +69,7 @@ void init_stripe(void) {
 		- Data Size = Byte
 		- Peripheral Increment disabled
 	*/
+  DMA_InitTypeDef DMA_InitStructure;
   DMA_InitStructure.DMA_BufferSize = 0;
   DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralDST;
   DMA_InitStructure.DMA_M2M = DMA_M2M_Disable;
@@ -85,15 +83,16 @@ void init_stripe(void) {
   DMA_InitStructure.DMA_Priority = DMA_Priority_High;
   DMA_Init(DMA1_Channel3, &DMA_InitStructure);
 
-  /* Enable DMAy Channelx Transmit Complete interrupt */
+  // Enable DMAy Channelx Transmit Complete interrupt
   DMA_ITConfig(DMA1_Channel3, DMA_IT_TC, ENABLE);
 
-  /* NVIC configuration */
+  // NVIC configuration
   /* NVIC configured as follow:
 	 	- DMA = 1
 		- channel = 3
 		- priority = 0
 	*/
+  NVIC_InitTypeDef NVIC_InitStructure;
   NVIC_InitStructure.NVIC_IRQChannel = DMA1_Channel3_IRQn;
   NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x0;
   NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x0;
@@ -101,13 +100,13 @@ void init_stripe(void) {
   NVIC_Init(&NVIC_InitStructure);
 
   // 15_03_05 workaround: 1st bit error
-  /* Disable DMAy Channelx */
+  // Disable DMAy Channelx
   DMA_Cmd(DMA1_Channel3, DISABLE);
   DMA_SetCurrDataCounter(DMA1_Channel3, 1);
 
   spiDataBuffer[0] = WS2812B_RESET;
 
-  /* Enable DMA Channelx */
+  // Enable DMA Channelx
   DMA_Cmd(DMA1_Channel3, ENABLE);
 }
 
@@ -131,9 +130,7 @@ void set_led(uint32_t *stripe, uint8_t pixel, uint32_t color) {
   * @retval None
   */
 void set_stripe(uint32_t *stripe, uint32_t color) {
-
-  int i = 0;
-  for (i = 0; i < NR_OF_LEDS; i++) {
+  for (int i = 0; i < NR_OF_LEDS; i++) {
     stripe[i] = color;
   }
 }
@@ -145,24 +142,19 @@ void set_stripe(uint32_t *stripe, uint32_t color) {
   * @retval None
   */
 void refresh_stripe(uint32_t *stripe, uint16_t leds) {
-  int led_nr = 0;
-  int bit = 0;
-  uint32_t led_color = 0;
-
   while (spiBusyFlag) // spi ready
   {
   }
   spiBusyFlag = 1;
 
-  /* Disable DMA */
+  // Disable DMA
   DMA_Cmd(DMA1_Channel3, DISABLE);
   DMA_SetCurrDataCounter(DMA1_Channel3, leds * 24 + BYTE_RESET); // 3 Byte pro LED + 40 Byte Reset
 
   // Data
-  for (led_nr = 0; led_nr < leds; led_nr++) {
-    led_color = *(stripe + led_nr); // 00 RR GG BB
-
-    for (bit = 0; bit <= 7; bit++) {
+  for (int led_nr = 0; led_nr < leds; led_nr++) {
+    uint32_t led_color = *(stripe + led_nr); // 00 RR GG BB
+    for (int bit = 0; bit <= 7; bit++) {
       // G
       if (((getGreen(led_color) >> (8 - bit)) & 0x01) == 1) // High
       {
@@ -191,11 +183,11 @@ void refresh_stripe(uint32_t *stripe, uint16_t leds) {
   }
 
   // 50us Reset
-  for (bit = 0; bit < BYTE_RESET; bit++) {
+  for (int bit = 0; bit < BYTE_RESET; bit++) {
     spiDataBuffer[leds * 24 + bit] = WS2812B_RESET;
   }
 
-  /* DMA enable*/
+  // DMA enable
   DMA_Cmd(DMA1_Channel3, ENABLE);
 }
 
