@@ -9,10 +9,10 @@
   ******************************************************************************
   */
 
-#include <__cross_studio_io.h>
 #include "color.h"
 #include "rgb_lib.h"
 #include "stm32f10x.h"
+#include <__cross_studio_io.h>
 
 static void delay(int d) {
   for (int i = 0; i < d * 1000; i++) {
@@ -100,21 +100,15 @@ void theaterChaseRainbow(uint8_t wait) {
   }
 }
 
-
-#define DWT_BASE            (0xE0001000UL)                            /*!< DWT Base Address */
-#define DWT                 ((DWT_Type       *)     DWT_BASE      )   /*!< DWT configuration struct */
-
-
-
 int main(void) {
   init_stripe();
 
-// at 24MHz it is running at 143Hz
-//  for(int i=0; i<10; ++i) {
+  // at 72MHz it is running at 345.9Hz (208160 cycles)
+//  for (int i = 0; i < 10; ++i) {
 //    uint32_t cyc = DWT->CYCCNT;
-//      refresh_stripe(stripe, NR_OF_LEDS);
-//      cyc = DWT->CYCCNT - cyc;
-//      debug_printf("%d = %.1fHz\n", cyc, 1.0 * SystemCoreClock / cyc);
+//    refresh_stripe(stripe, NR_OF_LEDS);
+//    cyc = DWT->CYCCNT - cyc;
+//    debug_printf("%d = %.1fHz\n", cyc, 1.0 * SystemCoreClock / cyc);
 //  }
 
   while (1) {
@@ -130,7 +124,7 @@ int main(void) {
     colorWipe(RED, 50);
     colorWipe(GREEN, 50);
     colorWipe(BLUE, 50);
-//    colorWipe(setColor(0, 0, 0, 255), 50); // White RGBW
+    //    colorWipe(setColor(0, 0, 0, 255), 50); // White RGBW
     // Send a theater pixel chase in...
     theaterChase(setColor(127, 127, 127), 50); // White
     theaterChase(setColor(127, 0, 0), 50);     // Red
