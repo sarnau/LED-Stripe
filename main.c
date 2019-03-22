@@ -66,17 +66,17 @@ void rainbowCycle(uint8_t wait) {
 
 //Theatre-style crawling lights.
 void theaterChase(uint32_t c, uint8_t wait) {
-  for (int j = 0; j < 10; j++) { //do 10 cycles of chasing
+  for (int j = 0; j < 10; j++) { // do 10 cycles of chasing
     for (int q = 0; q < 3; q++) {
       for (int i = 0; i < NR_OF_LEDS; i = i + 3) {
-        set_led(stripe, i + q, c); //turn every third pixel on
+        set_led(stripe, i + q, c); // turn every third pixel on
       }
       refresh_stripe(stripe, NR_OF_LEDS);
 
       delay(wait);
 
       for (int i = 0; i < NR_OF_LEDS; i = i + 3) {
-        set_led(stripe, i + q, 0); //turn every third pixel off
+        set_led(stripe, i + q, 0); // turn every third pixel off
       }
     }
   }
@@ -87,14 +87,14 @@ void theaterChaseRainbow(uint8_t wait) {
   for (int j = 0; j < 256; j++) { // cycle all 256 colors in the wheel
     for (int q = 0; q < 3; q++) {
       for (int i = 0; i < NR_OF_LEDS; i = i + 3) {
-        set_led(stripe, i + q, Wheel((i + j) % 255)); //turn every third pixel on
+        set_led(stripe, i + q, Wheel((i + j) % 255)); // turn every third pixel on
       }
       refresh_stripe(stripe, NR_OF_LEDS);
 
       delay(wait);
 
       for (int i = 0; i < NR_OF_LEDS; i = i + 3) {
-        set_led(stripe, i + q, 0); //turn every third pixel off
+        set_led(stripe, i + q, 0); // turn every third pixel off
       }
     }
   }
@@ -116,7 +116,7 @@ int main(void) {
     colorWipe(setColor(255, 0, 0), 50); // Red
     colorWipe(setColor(0, 255, 0), 50); // Green
     colorWipe(setColor(0, 0, 255), 50); // Blue
-                                        //colorWipe(setColor(0, 0, 0, 255), 50); // White RGBW
+                                        // colorWipe(setColor(0, 0, 0, 255), 50); // White RGBW
     // Send a theater pixel chase in...
     theaterChase(setColor(127, 127, 127), 50); // White
     theaterChase(setColor(127, 0, 0), 50);     // Red
