@@ -24,6 +24,8 @@
 #define LIGHTBLUE 0x00FFFF
 #define BLUE 0x0000FF
 #define VIOLET 0x8F00FF
+#define WHITE 0xFFFFFF
+#define BLACK 0x000000
 
 /* Prototypes ----------------------------------------------------------------*/
 uint32_t hsv_to_rgb(uint16_t hue, uint8_t saturation, uint8_t value);

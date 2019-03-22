@@ -106,17 +106,17 @@ int main(void) {
   while (1) {
     const int speed[5] = {50, 25, 10, 4, 0};
     for (int loop = 0; loop < 5; ++loop) {
-      colorWipe(setColor(255, 255, 255), speed[loop]);
+      colorWipe(WHITE, speed[loop]);
       delay(1000);
-      colorWipe(setColor(0, 0, 0), speed[loop]);
+      colorWipe(BLACK, speed[loop]);
       delay(1000);
     }
 
     // Some example procedures showing how to display to the pixels:
-    colorWipe(setColor(255, 0, 0), 50); // Red
-    colorWipe(setColor(0, 255, 0), 50); // Green
-    colorWipe(setColor(0, 0, 255), 50); // Blue
-                                        // colorWipe(setColor(0, 0, 0, 255), 50); // White RGBW
+    colorWipe(RED, 50);
+    colorWipe(GREEN, 50);
+    colorWipe(BLUE, 50);
+//    colorWipe(setColor(0, 0, 0, 255), 50); // White RGBW
     // Send a theater pixel chase in...
     theaterChase(setColor(127, 127, 127), 50); // White
     theaterChase(setColor(127, 0, 0), 50);     // Red
