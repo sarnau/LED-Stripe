@@ -114,7 +114,7 @@ int main(void) {
   while (1) {
     const int speed[5] = {50, 25, 10, 4, 0};
     for (int loop = 0; loop < 5; ++loop) {
-      colorWipe(WHITE, speed[loop]);
+      colorWipe(WHITE, speed[loop]); 
       delay(1000);
       colorWipe(BLACK, speed[loop]);
       delay(1000);

@@ -100,7 +100,7 @@ void init_stripe(void) {
   NVIC_Init(&NVIC_InitStructure);
 
   // 15_03_05 workaround: 1st bit error
-  // Disable DMAy Channelx
+  // Disable DMAy Channel3
   DMA_Cmd(DMA1_Channel3, DISABLE);
   DMA_SetCurrDataCounter(DMA1_Channel3, 1);
 
